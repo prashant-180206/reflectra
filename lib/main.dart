@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mindlog/core/database/database.dart';
 import 'package:mindlog/core/routes/app_router.dart';
+import 'package:mindlog/core/database/database.dart';
 import 'package:mindlog/core/theme/riverpod/theme_provider.dart';
 import 'package:mindlog/core/theme/theme.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+// import 'package:ollama_dart/ollama_dart.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +19,7 @@ class MainApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(appThemeProvider);
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerConfig: goRouter,
       theme: MainAppTheme.light,
       darkTheme: MainAppTheme.dark,

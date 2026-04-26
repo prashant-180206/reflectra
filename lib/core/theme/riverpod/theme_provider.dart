@@ -7,11 +7,11 @@ part 'theme_provider.g.dart';
 class AppTheme extends _$AppTheme {
   @override
   ThemeMode build() {
-    return ThemeMode.system;
+    return ThemeMode.light;
   }
 
-  void toggle(){
-    if (state == ThemeMode.light){
+  void toggle() {
+    if (state == ThemeMode.light) {
       state = ThemeMode.dark;
     } else {
       state = ThemeMode.light;

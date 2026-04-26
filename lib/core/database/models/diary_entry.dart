@@ -4,11 +4,29 @@ part 'diary_entry.g.dart';
 
 @collection
 class DiaryEntry {
-  DiaryEntry({required this.id});
-  final int id ;
-  late String name;
+  DiaryEntry({
+    this.id = 0,
+    required this.dayKey,
+    required this.createdAt,
+    required this.title,
+    required this.content,
+    DateTime? updatedAt,
+    this.source = 'manual',
+  });
 
-  int? age;
+  int id;
 
-  late String email;
+  @Index()
+  late int dayKey;
+
+  @Index()
+  late DateTime createdAt;
+
+  DateTime? updatedAt;
+
+  late String title;
+
+  late String content;
+
+  late String source;
 }
