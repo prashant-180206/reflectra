@@ -29,16 +29,23 @@ class OllamaBaseService {
     messagelist.add(ChatMessage.user(prompt));
 
     final response = await ai!.chat.create(
-      request: ChatRequest(
-        model: 'gpt-oss:120b-cloud',
-        messages: messagelist,
-      ),
+      request: ChatRequest(model: 'gpt-oss:120b-cloud', messages: messagelist),
     );
 
     final content = response.message?.content ?? '';
 
     messagelist.add(ChatMessage.assistant(content));
 
+    return content;
+  }
+
+  Future<String> continueChat() async {
+    if (ai == null) throw Exception('AI not initialized');
+    final response = await ai!.chat.create(
+      request: ChatRequest(model: 'gpt-oss:120b-cloud', messages: messagelist),
+    );
+    final content = response.message?.content ?? '';
+    messagelist.add(ChatMessage.assistant(content));
     return content;
   }
 

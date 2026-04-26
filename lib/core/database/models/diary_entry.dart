@@ -13,20 +13,13 @@ class DiaryEntry {
     DateTime? updatedAt,
     this.source = 'manual',
   });
-
   int id;
-
   @Index()
   late int dayKey;
-
   @Index()
   late DateTime createdAt;
-
   DateTime? updatedAt;
-
   late String title;
-
   late String content;
-
   late String source;
 }

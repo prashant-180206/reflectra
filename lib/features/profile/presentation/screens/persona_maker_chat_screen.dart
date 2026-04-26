@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mindlog/core/AI/wrappers/daily_chat_ai.dart';
+import 'package:mindlog/core/AI/wrappers/persona_chat_ai.dart';
 import 'package:mindlog/core/routes/app_routes.dart';
 import 'package:mindlog/core/singleton.dart';
 import 'package:mindlog/features/daily/data/dbconnect.dart';
 
-class DailyChatScreen extends HookConsumerWidget {
-  const DailyChatScreen({super.key, this.dayKey});
+class PersonaMakingChatScreen extends HookConsumerWidget {
+  const PersonaMakingChatScreen({super.key, this.dayKey});
 
   final int? dayKey;
 
@@ -18,7 +18,7 @@ class DailyChatScreen extends HookConsumerWidget {
     final aiUser = ChatUser(id: 'ai', name: 'AI');
     final controller = useRef(ChatMessagesController()).value;
     final loading = useState(false);
-    final ollama = useMemoized(() => DailyChatAi());
+    final ollama = useMemoized(() => PersonaProfileAi());
 
     useEffect(() {
       Future<void> initialize() async {
@@ -38,7 +38,6 @@ class DailyChatScreen extends HookConsumerWidget {
           );
         }
       }
-
       initialize();
       return () {
         controller.dispose();
