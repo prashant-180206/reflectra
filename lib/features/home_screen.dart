@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mindlog/core/routes/app_routes.dart';
 import 'package:mindlog/core/theme/riverpod/theme_provider.dart';

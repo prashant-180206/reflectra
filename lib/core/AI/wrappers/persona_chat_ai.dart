@@ -1,6 +1,27 @@
 import 'package:mindlog/core/AI/ai.dart';
+import 'package:mindlog/core/database/crud/persona_db.dart';
 
-String _profileInstructions = """
+Future<String> profileInstructions() async {
+  final prevPersona = await PersonaDb.getPersona();
+  final personaSummary = prevPersona == null
+      ? 'None'
+      : '''Identity:
+  Preferred name: ${prevPersona.identity?.preferredName ?? ''}
+  Age range: ${prevPersona.identity?.ageRange ?? ''}
+  Occupation/field: ${prevPersona.identity?.occupationOrField ?? ''}
+  Region: ${prevPersona.identity?.region ?? ''}
+
+Personality summary:
+  Traits: ${prevPersona.personality?.traits ?? []}
+  Thinking style: ${prevPersona.personality?.thinkingStyle ?? ''}
+
+Communication preferences:
+  Tone: ${prevPersona.communicationPreferences?.tone ?? ''}
+  Directness: ${prevPersona.communicationPreferences?.directness ?? ''}
+  Emoji preference: ${prevPersona.communicationPreferences?.emojiPreference ?? ''}
+''';
+
+  return """
 You are a friendly onboarding companion.
 
 Your goal is to naturally understand the user’s personality, preferences, lifestyle, communication style, goals, and important context so future AI conversations can feel personalized.
@@ -66,9 +87,29 @@ Rules:
 - Just gather information naturally over time
 
 You are building context slowly and comfortably.
-""";
 
-String _profileFinishInstructions = """
+Existing Persona Context:
+
+$personaSummary
+""";
+}
+
+Future<String> _profileFinishInstructions() async {
+  final prevPersona = await PersonaDb.getPersona();
+  final personaSummary = prevPersona == null
+      ? 'None'
+      : '''Identity:
+  Preferred name: ${prevPersona.identity?.preferredName ?? ''}
+  Age range: ${prevPersona.identity?.ageRange ?? ''}
+  Occupation/field: ${prevPersona.identity?.occupationOrField ?? ''}
+  Region: ${prevPersona.identity?.region ?? ''}
+
+Personality summary:
+  Traits: ${prevPersona.personality?.traits ?? []}
+  Thinking style: ${prevPersona.personality?.thinkingStyle ?? ''}
+''';
+
+  return """
 You are a system that extracts structured persona data from a conversation.
 
 Your task is to convert the full conversation into a structured JSON object.
@@ -137,13 +178,26 @@ Rules:
 - Keep JSON valid.
 - Do not wrap in markdown fences.
 - No trailing commas.
+
+Existing Persona Context:
+
+$personaSummary
 """;
+}
 
 class PersonaProfileAi extends OllamaBaseService {
-  PersonaProfileAi() : super(_profileInstructions);
+  PersonaProfileAi() : super();
 
   @override
-  Future<String> finishChat(String? _) {
-    return super.finishChat(_profileFinishInstructions);
+  Future<String> finishChat(String? _) async {
+    final inst = await _profileFinishInstructions();
+    return super.finishChat(inst);
+  }
+
+  @override
+  Future<void> init() async {
+    final inst = await profileInstructions();
+    addInstructions(inst);
+    return super.init();
   }
 }

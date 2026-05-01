@@ -1,6 +1,37 @@
 import 'package:mindlog/core/AI/ai.dart';
+import 'package:mindlog/core/database/crud/custom_instruction_db.dart';
+import 'package:mindlog/core/database/crud/entry_db.dart';
+import 'package:mindlog/core/database/crud/persona_db.dart';
 
-String _instructions = """
+Future<String> _customInstructionsSummary() async {
+  final customInstructions = await CustomInstructionDb.getCustomInstruction();
+  final summary = customInstructions?.instructions.trim() ?? '';
+  return summary.isEmpty ? 'None' : summary;
+}
+
+Future<String> instructions() async {
+  final persona = await PersonaDb.getPersona();
+  final personaSummary = persona == null
+      ? 'None'
+      : '''Identity:
+  Preferred name: ${persona.identity?.preferredName ?? ''}
+  Age range: ${persona.identity?.ageRange ?? ''}
+  Occupation/field: ${persona.identity?.occupationOrField ?? ''}
+  Region: ${persona.identity?.region ?? ''}
+
+Personality summary:
+  Traits: ${persona.personality?.traits ?? []}
+  Thinking style: ${persona.personality?.thinkingStyle ?? ''}
+  Energy pattern: ${persona.personality?.energyPattern ?? ''}
+
+Communication preferences:
+  Tone: ${persona.communicationPreferences?.tone ?? ''}
+  Directness: ${persona.communicationPreferences?.directness ?? ''}
+  Emoji preference: ${persona.communicationPreferences?.emojiPreference ?? ''}
+''';
+  final customInstructionSummary = await _customInstructionsSummary();
+
+  return """
 You are a friendly daily check-in companion.
 
 Your goal is to help the user naturally talk about their day so it can later be turned into a diary entry.
@@ -53,9 +84,28 @@ Strict Rules:
 - Do NOT generate diary entries
 - Stay focused on the user's day only
 
-""";
 
-String _finishInstructions = """
+Current Persona Context:
+$personaSummary
+
+Custom Instructions:
+$customInstructionSummary
+""";
+}
+
+Future<String> _finishInstructions() async {
+  final prevEntries = await EntryDb.getLastThreeEntries();
+  final customInstructionSummary = await _customInstructionsSummary();
+  final entriesSummary = prevEntries.isEmpty
+      ? 'None'
+      : prevEntries
+            .map(
+              (e) =>
+                  '- ${e.title} (${e.createdAt.toIso8601String()}): ${e.content.replaceAll('\n', ' ')}',
+            )
+            .join('\n');
+
+  return """
 You are a personal diary writer.
 
 Your task is to convert the user's daily conversation into a structured diary entry in clean Markdown format.
@@ -102,13 +152,28 @@ Formatting Rules:
 Important:
 - This is a structured diary, not a story
 - Focus on clarity over creativity
+
+Custom Instructions:
+$customInstructionSummary
+
+Recent Entries Context:
+$entriesSummary
 """;
+}
 
 class DailyChatAi extends OllamaBaseService {
-  DailyChatAi() : super(_instructions);
+  DailyChatAi() : super();
 
   @override
-  Future<String> finishChat(String? _) {
-    return super.finishChat(_finishInstructions);
+  Future<String> finishChat(String? _) async {
+    final inst = await _finishInstructions();
+    return super.finishChat(inst);
+  }
+
+  @override
+  Future<void> init() async {
+    final inst = await instructions();
+    addInstructions(inst);
+    await super.init();
   }
 }

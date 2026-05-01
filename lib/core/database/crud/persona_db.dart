@@ -7,14 +7,12 @@ class PersonaDb {
 
   static Future<void> savePersona(Persona persona) async {
     return _isar.write((isar) {
-      if (persona.id <= 0) {
-        persona.id = 0;
-      }
+      persona.id = 0;
       isar.personas.put(persona);
     });
   }
-
-  static Future<Persona?> getPersonaById() async {
+  
+  static Future<Persona?> getPersona() async {
     return _isar.personas.get(0);
   }
 
@@ -23,5 +21,4 @@ class PersonaDb {
       return _isar.personas.delete(0);
     });
   }
-
 }

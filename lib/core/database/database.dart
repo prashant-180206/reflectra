@@ -1,4 +1,5 @@
 import 'package:isar_plus/isar_plus.dart';
+import 'package:mindlog/core/database/models/custom_instruction.dart';
 import 'package:mindlog/core/database/models/diary_entry.dart';
 import 'package:mindlog/core/database/models/persona.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,7 +11,7 @@ class Database {
   static Future<void> init() async {
     final dir = await getApplicationDocumentsDirectory();
     isar = Isar.open(
-      schemas: [DiaryEntrySchema, PersonaSchema],
+      schemas: [DiaryEntrySchema, PersonaSchema, CustomInstructionSchema],
       directory: dir.path,
       name: _dbName,
     );

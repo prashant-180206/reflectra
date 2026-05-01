@@ -7,8 +7,14 @@ class OllamaBaseService {
   final messagelist = <ChatMessage>[]; // for conversation only
   OllamaClient? ai;
 
-  OllamaBaseService(this.instructions) {
-    messagelist.add(ChatMessage.system(instructions));
+  OllamaBaseService({this.instructions = ''}) {
+    if (instructions.isNotEmpty) {
+      messagelist.add(ChatMessage.system(instructions));
+    }
+  }
+
+  Future<void> addInstructions(String instructions) async {
+    messagelist.insert(0, ChatMessage.system(instructions));
   }
 
   Future<void> init() async {
@@ -79,7 +85,9 @@ class OllamaBaseService {
 
   void clearchat() {
     messagelist.clear();
-    messagelist.add(ChatMessage.system(instructions));
+    if (instructions.isNotEmpty) {
+      messagelist.add(ChatMessage.system(instructions));
+    }
   }
 
   void close() {

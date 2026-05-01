@@ -4,7 +4,6 @@ import 'package:mindlog/core/database/models/diary_entry.dart';
 import 'package:mindlog/core/database/utils/db_utils.dart';
 
 class EntryDb {
-  
   static Isar get _isar => Database.isar;
 
   static Future<List<DiaryEntry>> getEntriesForDay(DateTime date) async {
@@ -18,6 +17,10 @@ class EntryDb {
 
   static Future<DiaryEntry?> getEntryById(int id) async {
     return _isar.diaryEntrys.get(id);
+  }
+
+  static Future<List<DiaryEntry>> getLastThreeEntries() async {
+    return _isar.diaryEntrys.where().sortByCreatedAtDesc().findAll(limit: 3);
   }
 
   static Future<int> saveEntry(DiaryEntry entry) async {
