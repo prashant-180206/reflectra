@@ -1,6 +1,6 @@
 import 'package:isar_plus/isar_plus.dart';
-import 'package:mindlog/core/database/database.dart';
-import 'package:mindlog/core/database/models/persona.dart';
+import 'package:reflectra/core/database/database.dart';
+import 'package:reflectra/core/database/models/persona.dart';
 
 class PersonaDb {
   static Isar get _isar => Database.isar;

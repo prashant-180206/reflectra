@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mindlog/core/routes/app_router.dart';
-import 'package:mindlog/core/database/database.dart';
-import 'package:mindlog/core/theme/riverpod/theme_provider.dart';
-import 'package:mindlog/core/theme/theme.dart';
+import 'package:reflectra/core/routes/app_router.dart';
+import 'package:reflectra/core/database/database.dart';
+import 'package:reflectra/core/theme/riverpod/theme_provider.dart';
+import 'package:reflectra/core/theme/theme.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // import 'package:ollama_dart/ollama_dart.dart';
 

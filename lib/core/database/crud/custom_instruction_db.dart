@@ -1,7 +1,7 @@
 import 'package:isar_plus/isar_plus.dart';
-import 'package:mindlog/core/database/database.dart';
-import 'package:mindlog/core/database/models/custom_instruction.dart';
-import 'package:mindlog/core/singleton.dart';
+import 'package:reflectra/core/database/database.dart';
+import 'package:reflectra/core/database/models/custom_instruction.dart';
+import 'package:reflectra/core/singleton.dart';
 
 class CustomInstructionDb {
   static Isar get _isar => Database.isar;

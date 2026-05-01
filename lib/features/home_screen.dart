@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mindlog/core/routes/app_routes.dart';
-import 'package:mindlog/core/theme/riverpod/theme_provider.dart';
+import 'package:reflectra/core/routes/app_routes.dart';
+import 'package:reflectra/core/theme/riverpod/theme_provider.dart';
 
 class HomeScreen extends HookConsumerWidget {
   const HomeScreen({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mindlog/core/security/apikeystore.dart';
-import 'package:mindlog/core/theme/riverpod/theme_provider.dart';
+import 'package:reflectra/core/security/apikeystore.dart';
+import 'package:reflectra/core/theme/riverpod/theme_provider.dart';
 
 class SettingsScreen extends HookConsumerWidget {
   const SettingsScreen({super.key});

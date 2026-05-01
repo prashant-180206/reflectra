@@ -2,8 +2,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mindlog/core/routes/app_routes.dart';
-import 'package:mindlog/features/entry/data/riverpod/active_entry_provider.dart';
+import 'package:reflectra/core/routes/app_routes.dart';
+import 'package:reflectra/features/entry/data/riverpod/active_entry_provider.dart';
 
 class EntryViewerScreen extends HookConsumerWidget {
   const EntryViewerScreen({super.key, required this.entryId});

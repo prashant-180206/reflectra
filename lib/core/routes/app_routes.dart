@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart'; // Must include for Widget/Scaffold
 import 'package:go_router/go_router.dart';
-import 'package:mindlog/features/daily/presentation/screens/daily_chat_screen.dart';
-import 'package:mindlog/features/entry/presentation/screens/entry_editor_screen.dart';
-import 'package:mindlog/features/entry/presentation/screens/entry_viewer_screen.dart';
-import 'package:mindlog/features/home_screen.dart';
-import 'package:mindlog/features/profile/presentation/screens/persona_maker_chat_screen.dart';
-import 'package:mindlog/features/profile/presentation/screens/profile_screen.dart';
-import 'package:mindlog/features/saved/saved_screen.dart';
-import 'package:mindlog/features/settings/settings_screen.dart';
+import 'package:reflectra/features/daily/presentation/screens/daily_chat_screen.dart';
+import 'package:reflectra/features/entry/presentation/screens/entry_editor_screen.dart';
+import 'package:reflectra/features/entry/presentation/screens/entry_viewer_screen.dart';
+import 'package:reflectra/features/home_screen.dart';
+import 'package:reflectra/features/profile/presentation/screens/persona_maker_chat_screen.dart';
+import 'package:reflectra/features/profile/presentation/screens/profile_screen.dart';
+import 'package:reflectra/features/saved/saved_screen.dart';
+import 'package:reflectra/features/settings/settings_screen.dart';
 
 part 'app_routes.g.dart';
 

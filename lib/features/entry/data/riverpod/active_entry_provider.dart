@@ -1,5 +1,5 @@
-import 'package:mindlog/core/database/crud/entry_db.dart';
-import 'package:mindlog/core/database/models/diary_entry.dart';
+import 'package:reflectra/core/database/crud/entry_db.dart';
+import 'package:reflectra/core/database/models/diary_entry.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'active_entry_provider.g.dart';

@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mindlog/core/AI/wrappers/daily_chat_ai.dart';
-import 'package:mindlog/core/routes/app_routes.dart';
-import 'package:mindlog/core/singleton.dart';
-import 'package:mindlog/features/daily/data/dbconnect.dart';
+import 'package:pattern_box/pattern_box.dart';
+import 'package:reflectra/core/AI/wrappers/daily_chat_ai.dart';
+import 'package:reflectra/core/routes/app_routes.dart';
+import 'package:reflectra/core/singleton.dart';
+import 'package:reflectra/features/daily/data/dbconnect.dart';
 
 class DailyChatScreen extends HookConsumerWidget {
   const DailyChatScreen({super.key, this.dayKey});
-
   final int? dayKey;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 1. Define Theme Variable for easy access
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     final currentUser = ChatUser(id: 'user1', name: 'You');
     final aiUser = ChatUser(id: 'ai', name: 'AI');
     final controller = useRef(ChatMessagesController()).value;
@@ -26,14 +29,10 @@ class DailyChatScreen extends HookConsumerWidget {
           await ollama.init();
         } catch (e) {
           logger.e('Failed to initialize AI client: $e');
-          if (!context.mounted) {
-            return;
-          }
+          if (!context.mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text(
-                'Failed to initialize AI client. Check your API key in BYOK settings.',
-              ),
+              content: Text('Failed to initialize AI. Check BYOK settings.'),
             ),
           );
         }
@@ -47,99 +46,154 @@ class DailyChatScreen extends HookConsumerWidget {
     }, []);
 
     Future<void> handleSendMessage(ChatMessage message) async {
-      if (loading.value) {
-        return;
-      }
-
-      logger.d('Message sent: $message');
-
-      controller.setStreamingMessage(null);
-
-      controller.addMessage(
-        ChatMessage(
-          text: message.text,
-          user: currentUser,
-          createdAt: DateTime.now(),
-        ),
-      );
+      if (loading.value) return;
 
       loading.value = true;
-      final response = await ollama.chat(message.text);
-      loading.value = false;
+      controller.setStreamingMessage(null);
+      try {
+        String response;
 
-      final responseId = 'ai_${DateTime.now().microsecondsSinceEpoch}';
-      controller.setStreamingMessage(responseId);
-      controller.addMessage(
-        ChatMessage(
-          text: response,
-          user: aiUser,
-          createdAt: DateTime.now(),
-          customProperties: {'id': responseId},
-        ),
-      );
-      // controller.setStreamingMessage(null);
+        if (message.text.trim().isEmpty) {
+          response = await ollama.continueChat();
+        } else {
+          controller.addMessage(
+            ChatMessage(
+              text: message.text,
+              user: currentUser,
+              createdAt: DateTime.now(),
+            ),
+          );
+          response = await ollama.chat(message.text);
+        }
+
+        final responseId = 'ai_${DateTime.now().microsecondsSinceEpoch}';
+        controller.addMessage(
+          ChatMessage(
+            text: response,
+            user: aiUser,
+            createdAt: DateTime.now(),
+            customProperties: {'id': responseId},
+          ),
+        );
+        controller.setStreamingMessage(responseId);
+      } catch (e) {
+        logger.e("Chat error: $e");
+      } finally {
+        loading.value = false;
+      }
     }
 
     Future<void> finishAndSave() async {
-      if (loading.value) {
-        return;
-      }
+      if (loading.value) return;
       loading.value = true;
-      final diaryText = await ollama.finishChat(null);
-      logger.d('Diary generation complete: $diaryText');
-      loading.value = false;
 
-      if (!context.mounted) return;
+      try {
+        final diaryText = await ollama.finishChat(null);
 
-      if (diaryText.trim().isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No diary content was generated.')),
-        );
-        return;
+        if (!context.mounted) return;
+        if (diaryText.trim().isEmpty) return;
+
+        final savedId = await saveDiaryEntry(diaryText);
+        if (!context.mounted) return;
+
+        await EntryEditorRoute(entryId: savedId).push(context);
+      } finally {
+        loading.value = false;
       }
-
-      final savedId = await saveDiaryEntry(diaryText);
-
-      if (!context.mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('AI entry saved. Opening editor...')),
-      );
-      await EntryEditorRoute(entryId: savedId).push(context);
     }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('AI Daily Chat'),
         actions: [
-          TextButton(onPressed: finishAndSave, child: const Text('Finish')),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: TextButton(
+              onPressed: finishAndSave,
+              style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
+              child: const Text(
+                'Finish',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
         ],
       ),
-      body: AiChatWidget(
-        welcomeMessageConfig: WelcomeMessageConfig(
-          title: "Lets Talk about your day",
+      body: PatternBoxWidget(
+        pattern: DottedWavePainter(),
+        backgroundGradient: LinearGradient(
+          colors: [
+            colorScheme.primary.withValues(alpha: 0.05),
+            colorScheme.primary.withValues(alpha: 0.5),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        enableMarkdownStreaming: true,
-        quickReplyOptions: const QuickReplyOptions(),
 
-        loadingConfig: LoadingConfig(isLoading: loading.value),
-        padding: const EdgeInsets.all(16),
-        currentUser: currentUser,
-        aiUser: aiUser,
-        controller: controller,
-        onSendMessage: handleSendMessage,
-        messageOptions: const MessageOptions(
-          showUserName: false,
-          showTime: false,
-          padding: EdgeInsets.all(10),
-        ),
-        inputOptions: InputOptions(
-          sendOnEnter: true,
-          decoration: InputDecoration(
-            hintText: 'Type your message...',
+        // child: PatternBoxWidget(pattern: DottedWavePainter()),
+        child: AiChatWidget(
+          welcomeMessageConfig: WelcomeMessageConfig(
+            title: "Let's talk about your day",
+            titleStyle: theme.textTheme.headlineSmall?.copyWith(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          enableMarkdownStreaming: true,
+          loadingConfig: LoadingConfig(
+            isLoading: loading.value,
+            typingIndicatorColor: colorScheme.primary,
+          ),
+          currentUser: currentUser,
+          aiUser: aiUser,
+          controller: controller,
+          onSendMessage: handleSendMessage,
 
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
+          messageOptions: MessageOptions(
+            showUserName: false,
+            showTime: false,
+            aiTextColor: colorScheme.onSurfaceVariant,
+            userTextColor: colorScheme.onPrimary,
+            bubbleStyle: BubbleStyle(
+              userBubbleColor: colorScheme.primary,
+              aiBubbleColor: colorScheme.surfaceContainerHighest,
+              aiNameColor: colorScheme.onSurfaceVariant,
+              userNameColor: colorScheme.onPrimary,
+              // userTextStyle: TextStyle(color: colorScheme.onPrimary),
+            ),
+          ),
+
+          inputOptions: InputOptions(
+            containerPadding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
+            containerBackgroundColor: colorScheme.surface,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            sendOnEnter: true,
+            decoration: InputDecoration(
+              hintText: 'Reflect on your day...',
+              hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+
+              filled: true,
+              fillColor: colorScheme.surfaceContainerHigh,
+
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
+
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide.none,
+              ),
+
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: colorScheme.outlineVariant),
+              ),
+
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+              ),
             ),
           ),
         ),

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:mindlog/core/database/models/persona.dart';
+import 'package:reflectra/core/database/models/persona.dart';
 
 class PersonaMapper {
   static Persona fromAiJson(String rawJson) {

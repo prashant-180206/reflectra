@@ -1,5 +1,5 @@
-import 'package:mindlog/core/database/crud/entry_db.dart';
-import 'package:mindlog/core/database/models/diary_entry.dart';
+import 'package:reflectra/core/database/crud/entry_db.dart';
+import 'package:reflectra/core/database/models/diary_entry.dart';
 
 Future<int> editDiaryEntry(
   String content,

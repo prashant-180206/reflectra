@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mindlog/core/AI/wrappers/persona_chat_ai.dart';
-import 'package:mindlog/core/singleton.dart';
-import 'package:mindlog/features/profile/data/dbutils.dart';
+import 'package:reflectra/core/AI/wrappers/persona_chat_ai.dart';
+import 'package:reflectra/core/singleton.dart';
+import 'package:reflectra/features/profile/data/dbutils.dart';
 
 class PersonaMakingChatScreen extends HookConsumerWidget {
   const PersonaMakingChatScreen({super.key, this.dayKey});

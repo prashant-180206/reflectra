@@ -4,10 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class Editor extends HookWidget {
-  const Editor({super.key, required this.content, required this.editorState});
+  const Editor({
+    super.key,
+    required this.content,
+    required this.editorState,
+    this.editing = false,
+  });
 
   final String content;
   final EditorState editorState;
+  final bool editing;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +67,7 @@ class Editor extends HookWidget {
     Widget editor = AppFlowyEditor(
       editorState: editorState,
       editorScrollController: editorScrollController,
-      editable: true,
+      editable: editing,
       editorStyle: EditorStyle(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         cursorColor: colorScheme.primary,
@@ -121,6 +127,6 @@ class Editor extends HookWidget {
       );
     }
 
-    return const Placeholder();
+    return editor;
   }
 }

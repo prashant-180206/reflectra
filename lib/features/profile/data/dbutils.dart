@@ -1,6 +1,6 @@
-import 'package:mindlog/core/database/crud/persona_db.dart';
-import 'package:mindlog/core/singleton.dart';
-import 'package:mindlog/features/profile/utils/persona_maker.dart';
+import 'package:reflectra/core/database/crud/persona_db.dart';
+import 'package:reflectra/core/singleton.dart';
+import 'package:reflectra/features/profile/utils/persona_maker.dart';
 
 Future<int> savePersonaEntry(String personaJson) async {
   try {

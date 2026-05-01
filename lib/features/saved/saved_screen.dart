@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:isar_plus/isar_plus.dart';
-import 'package:mindlog/core/database/crud/entry_db.dart';
-import 'package:mindlog/core/database/database.dart';
-import 'package:mindlog/core/database/models/diary_entry.dart';
-import 'package:mindlog/core/database/utils/db_utils.dart';
-import 'package:mindlog/core/routes/app_routes.dart';
+import 'package:reflectra/core/database/crud/entry_db.dart';
+import 'package:reflectra/core/database/database.dart';
+import 'package:reflectra/core/database/models/diary_entry.dart';
+import 'package:reflectra/core/database/utils/db_utils.dart';
+import 'package:reflectra/core/routes/app_routes.dart';
 
 class SavedScreen extends HookWidget {
   const SavedScreen({super.key});

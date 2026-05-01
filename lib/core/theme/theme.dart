@@ -18,7 +18,7 @@ abstract final class MainAppTheme {
       alignedDropdown: true,
       navigationRailUseIndicator: true,
     ),
-    // Direct ThemeData properties.
+       // Direct ThemeData properties.
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
     cupertinoOverrideTheme: const CupertinoThemeData(applyThemeToAll: true),
   );

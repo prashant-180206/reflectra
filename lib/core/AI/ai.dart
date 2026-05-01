@@ -1,6 +1,6 @@
-import 'package:mindlog/core/security/apikeystore.dart';
+import 'package:reflectra/core/security/apikeystore.dart';
 import 'package:ollama_dart/ollama_dart.dart';
-// import 'package:mindlog/core/singleton.dart';
+// import 'package:reflectra/core/singleton.dart';
 
 class OllamaBaseService {
   final String instructions;

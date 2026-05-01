@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mindlog/core/database/crud/custom_instruction_db.dart';
-import 'package:mindlog/core/routes/app_routes.dart';
-import 'package:mindlog/core/singleton.dart';
+import 'package:reflectra/core/database/crud/custom_instruction_db.dart';
+import 'package:reflectra/core/routes/app_routes.dart';
+import 'package:reflectra/core/singleton.dart';
 
 class ProfileScreen extends HookConsumerWidget {
   const ProfileScreen({super.key});
