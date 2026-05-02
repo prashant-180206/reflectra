@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pattern_box/pattern_box.dart';
 import 'package:reflectra/core/AI/wrappers/persona_chat_ai.dart';
 import 'package:reflectra/core/singleton.dart';
 import 'package:reflectra/features/profile/data/dbutils.dart';
@@ -13,6 +14,9 @@ class PersonaMakingChatScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     final currentUser = ChatUser(id: 'user1', name: 'You');
     final aiUser = ChatUser(id: 'ai', name: 'AI');
     final controller = useRef(ChatMessagesController()).value;
@@ -25,9 +29,8 @@ class PersonaMakingChatScreen extends HookConsumerWidget {
           await ollama.init();
         } catch (e) {
           logger.e('Failed to initialize AI client: $e');
-          if (!context.mounted) {
-            return;
-          }
+          if (!context.mounted) return;
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -46,11 +49,7 @@ class PersonaMakingChatScreen extends HookConsumerWidget {
     }, []);
 
     Future<void> handleSendMessage(ChatMessage message) async {
-      if (loading.value) {
-        return;
-      }
-
-      logger.d('Message sent: $message');
+      if (loading.value) return;
 
       controller.setStreamingMessage(null);
 
@@ -63,81 +62,158 @@ class PersonaMakingChatScreen extends HookConsumerWidget {
       );
 
       loading.value = true;
-      final response = await ollama.chat(message.text);
-      loading.value = false;
 
-      final responseId = 'ai_${DateTime.now().microsecondsSinceEpoch}';
-      controller.setStreamingMessage(responseId);
-      controller.addMessage(
-        ChatMessage(
-          text: response,
-          user: aiUser,
-          createdAt: DateTime.now(),
-          customProperties: {'id': responseId},
-        ),
-      );
-      // controller.setStreamingMessage(null);
+      try {
+        final response = await ollama.chat(message.text);
+
+        final responseId = 'ai_${DateTime.now().microsecondsSinceEpoch}';
+
+        controller.addMessage(
+          ChatMessage(
+            text: response,
+            user: aiUser,
+            createdAt: DateTime.now(),
+            customProperties: {'id': responseId},
+          ),
+        );
+
+        controller.setStreamingMessage(responseId);
+      } catch (e) {
+        logger.e("Chat error: $e");
+      } finally {
+        loading.value = false;
+      }
     }
 
     Future<void> finishAndSave() async {
-      if (loading.value) {
-        return;
-      }
+      if (loading.value) return;
+
       loading.value = true;
-      final diaryText = await ollama.finishChat(null);
-      logger.d('Persona generation complete: $diaryText');
-      loading.value = false;
 
-      if (!context.mounted) return;
+      try {
+        final personaText = await ollama.finishChat(null);
 
-      if (diaryText.trim().isEmpty) {
+        if (!context.mounted) return;
+
+        if (personaText.trim().isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('No persona content was generated.'),
+            ),
+          );
+          return;
+        }
+
+        await savePersonaEntry(personaText);
+
+        if (!context.mounted) return;
+
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No persona content was generated.')),
+          const SnackBar(
+            content: Text('Persona saved successfully.'),
+          ),
         );
-        return;
+      } finally {
+        loading.value = false;
       }
-
-      await savePersonaEntry(diaryText);
-
-      if (!context.mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('AI entry saved. Opening editor...')),
-      );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI Daily Chat'),
+        title: const Text('AI Persona Builder'),
         actions: [
-          TextButton(onPressed: finishAndSave, child: const Text('Finish')),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: TextButton(
+              onPressed: finishAndSave,
+              style: TextButton.styleFrom(
+                foregroundColor: colorScheme.primary,
+              ),
+              child: const Text(
+                'Finish',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
         ],
       ),
-      body: AiChatWidget(
-        welcomeMessageConfig: WelcomeMessageConfig(
-          title: "Lets Talk about your day",
+      body: PatternBoxWidget(
+        pattern: DottedWavePainter(),
+        backgroundGradient: LinearGradient(
+          colors: [
+            colorScheme.primary.withValues(alpha: 0.05),
+            colorScheme.primary.withValues(alpha: 0.5),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        enableMarkdownStreaming: true,
-        quickReplyOptions: const QuickReplyOptions(),
-
-        loadingConfig: LoadingConfig(isLoading: loading.value),
-        padding: const EdgeInsets.all(16),
-        currentUser: currentUser,
-        aiUser: aiUser,
-        controller: controller,
-        onSendMessage: handleSendMessage,
-        messageOptions: const MessageOptions(
-          showUserName: false,
-          showTime: false,
-          padding: EdgeInsets.all(10),
-        ),
-        inputOptions: InputOptions(
-          sendOnEnter: true,
-          decoration: InputDecoration(
-            hintText: 'Type your message...',
-
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
+        child: AiChatWidget(
+          welcomeMessageConfig: WelcomeMessageConfig(
+            title: "Let’s build your persona together",
+            containerDecoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            titleStyle: theme.textTheme.headlineSmall?.copyWith(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          enableMarkdownStreaming: true,
+          loadingConfig: LoadingConfig(
+            isLoading: loading.value,
+            typingIndicatorColor: colorScheme.primary,
+          ),
+          currentUser: currentUser,
+          aiUser: aiUser,
+          controller: controller,
+          onSendMessage: handleSendMessage,
+          messageOptions: MessageOptions(
+            showUserName: false,
+            showTime: false,
+            aiTextColor: colorScheme.onSurfaceVariant,
+            userTextColor: colorScheme.onPrimary,
+            bubbleStyle: BubbleStyle(
+              userBubbleColor: colorScheme.primary,
+              aiBubbleColor: colorScheme.surfaceContainerHighest,
+              aiNameColor: colorScheme.onSurfaceVariant,
+              userNameColor: colorScheme.onPrimary,
+            ),
+          ),
+          inputOptions: InputOptions(
+            containerPadding:
+                const EdgeInsets.fromLTRB(12, 8, 12, 16),
+            containerBackgroundColor: colorScheme.surface,
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            sendOnEnter: true,
+            decoration: InputDecoration(
+              hintText: 'Explore Yourself...',
+              hintStyle: TextStyle(
+                color: colorScheme.onSurfaceVariant,
+              ),
+              filled: true,
+              fillColor: colorScheme.surfaceContainerHigh,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide:
+                    BorderSide(color: colorScheme.outlineVariant),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(
+                  color: colorScheme.primary,
+                  width: 1.5,
+                ),
+              ),
             ),
           ),
         ),

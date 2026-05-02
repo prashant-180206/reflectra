@@ -1,13 +1,17 @@
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart'; // Must include for Widget/Scaffold
 import 'package:go_router/go_router.dart';
 import 'package:reflectra/features/daily/presentation/screens/daily_chat_screen.dart';
 import 'package:reflectra/features/entry/presentation/screens/entry_editor_screen.dart';
 import 'package:reflectra/features/entry/presentation/screens/entry_viewer_screen.dart';
-import 'package:reflectra/features/home_screen.dart';
+import 'package:reflectra/features/home/presentation/screen/home_screen.dart';
+import 'package:reflectra/features/profile/presentation/screens/instruction_configuration_screen.dart';
+import 'package:reflectra/features/profile/presentation/screens/persona_viewer_editor_screen.dart';
 import 'package:reflectra/features/profile/presentation/screens/persona_maker_chat_screen.dart';
 import 'package:reflectra/features/profile/presentation/screens/profile_screen.dart';
 import 'package:reflectra/features/saved/saved_screen.dart';
-import 'package:reflectra/features/settings/settings_screen.dart';
+import 'package:reflectra/features/settings/presentation/screens/advanced_settings_screen.dart';
+import 'package:reflectra/features/settings/presentation/screens/settings_screen.dart';
 
 part 'app_routes.g.dart';
 
@@ -26,6 +30,8 @@ class RootRoute extends GoRouteData with $RootRoute {
     TypedGoRoute<HomeRoute>(path: '/home'),
     TypedGoRoute<SavedRoute>(path: '/saved'),
     TypedGoRoute<ProfileRoute>(path: '/profile'),
+    TypedGoRoute<PersonaViewerEditorRoute>(path: '/profile/persona'),
+    TypedGoRoute<InstructionConfigurationRoute>(path: '/profile/instructions'),
     TypedGoRoute<SettingsRoute>(path: '/settings'),
   ],
 )
@@ -60,12 +66,21 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selectedIndex = _selectedIndex();
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       body: child,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedIndex,
-        onDestinationSelected: (index) {
+      bottomNavigationBar: ConvexAppBar(
+        height: 60,
+        top: -5,
+        backgroundColor: colorScheme.surfaceContainer,
+        activeColor: theme.brightness == Brightness.dark
+            ? colorScheme.inversePrimary
+            : colorScheme.primaryFixedDim,
+        color: colorScheme.onSurfaceVariant,
+        initialActiveIndex: selectedIndex,
+        onTap: (index) {
           if (index == selectedIndex) {
             return;
           }
@@ -81,26 +96,26 @@ class AppShell extends StatelessWidget {
               const SettingsRoute().go(context);
           }
         },
-        destinations: const [
-          NavigationDestination(
+        items: const [
+          TabItem(
             icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
+            activeIcon: Icon(Icons.home),
+            title: 'Home',
           ),
-          NavigationDestination(
+          TabItem(
             icon: Icon(Icons.bookmark_border),
-            selectedIcon: Icon(Icons.bookmark),
-            label: 'Saved',
+            activeIcon: Icon(Icons.bookmark),
+            title: 'Saved',
           ),
-          NavigationDestination(
+          TabItem(
             icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Profile',
+            activeIcon: Icon(Icons.person),
+            title: 'Profile',
           ),
-          NavigationDestination(
+          TabItem(
             icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: 'Settings',
+            activeIcon: Icon(Icons.settings),
+            title: 'Settings',
           ),
         ],
       ),
@@ -138,6 +153,30 @@ class ProfileRoute extends GoRouteData with $ProfileRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const ProfileScreen();
+  }
+}
+
+class PersonaViewerEditorRoute extends GoRouteData
+    with $PersonaViewerEditorRoute {
+  const PersonaViewerEditorRoute();
+
+  static const String path = '/profile/persona';
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const PersonaViewerEditorScreen();
+  }
+}
+
+class InstructionConfigurationRoute extends GoRouteData
+    with $InstructionConfigurationRoute {
+  const InstructionConfigurationRoute();
+
+  static const String path = '/profile/instructions';
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const InstructionConfigurationScreen();
   }
 }
 
@@ -193,5 +232,16 @@ class PersonaMakingChatRoute extends GoRouteData with $PersonaMakingChatRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return PersonaMakingChatScreen();
+  }
+}
+
+@TypedGoRoute<AiSettingsRoute>(path: '/aisettings')
+class AiSettingsRoute extends GoRouteData with $AiSettingsRoute {
+  const AiSettingsRoute();
+  // final int? entryId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AdvancedSettingsScreen();
   }
 }

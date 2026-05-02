@@ -1,42 +1,24 @@
-import 'package:isar_plus/isar_plus.dart';
-import 'package:reflectra/core/database/database.dart';
+import 'package:reflectra/core/database/db_service.dart';
 import 'package:reflectra/core/database/models/diary_entry.dart';
-import 'package:reflectra/core/database/utils/db_utils.dart';
 
+/// Deprecated: Use DbService instead for new code.
+/// This class maintains backwards compatibility.
 class EntryDb {
-  static Isar get _isar => Database.isar;
+  static Future<List<DiaryEntry>> getEntriesForDay(DateTime date) =>
+      DbService.getEntriesForDay(date);
 
-  static Future<List<DiaryEntry>> getEntriesForDay(DateTime date) async {
-    final dayKey = DbUtils.dayKeyFromDate(date);
-    return _isar.diaryEntrys
-        .where()
-        .dayKeyEqualTo(dayKey)
-        .sortByCreatedAtDesc()
-        .findAll();
-  }
+  static Future<DiaryEntry?> getEntryById(int id) =>
+      DbService.getEntryById(id);
 
-  static Future<DiaryEntry?> getEntryById(int id) async {
-    return _isar.diaryEntrys.get(id);
-  }
+  static Future<List<DiaryEntry>> getLastThreeEntries() =>
+      DbService.getLastThreeEntries();
 
-  static Future<List<DiaryEntry>> getLastThreeEntries() async {
-    return _isar.diaryEntrys.where().sortByCreatedAtDesc().findAll(limit: 3);
-  }
+  static Future<int> saveEntry(DiaryEntry entry) =>
+      DbService.saveEntry(entry);
 
-  static Future<int> saveEntry(DiaryEntry entry) async {
-    entry.updatedAt = DateTime.now();
-    return _isar.write((isar) {
-      if (entry.id <= 0) {
-        entry.id = isar.diaryEntrys.autoIncrement();
-      }
-      isar.diaryEntrys.put(entry);
-      return entry.id;
-    });
-  }
+  static Future<bool> deleteEntry(int id) =>
+      DbService.deleteEntry(id);
 
-  static Future<bool> deleteEntry(int id) async {
-    return _isar.write((isar) {
-      return isar.diaryEntrys.delete(id);
-    });
-  }
+  static Future<List<DiaryEntry>> getAllEntries() =>
+      DbService.getAllEntries();
 }

@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:reflectra/core/routes/app_router.dart';
 import 'package:reflectra/core/database/database.dart';
@@ -9,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Database.init();
+
   runApp(const ProviderScope(child: MainApp()));
 }
 
@@ -18,12 +20,17 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(appThemeProvider);
+    final scheme = ref.watch(appColorSchemeProvider);
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: goRouter,
-      theme: MainAppTheme.light,
-      darkTheme: MainAppTheme.dark,
-      themeMode: themeMode,
+      theme: MainAppTheme.light(
+        scheme.asData?.value ?? FlexScheme.materialBaseline,
+      ),
+      darkTheme: MainAppTheme.dark(
+        scheme.asData?.value ?? FlexScheme.materialBaseline,
+      ),
+      themeMode: themeMode.asData?.value ?? ThemeMode.system,
     );
   }
 }

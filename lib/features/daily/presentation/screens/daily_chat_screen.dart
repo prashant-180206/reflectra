@@ -78,6 +78,21 @@ class DailyChatScreen extends HookConsumerWidget {
         controller.setStreamingMessage(responseId);
       } catch (e) {
         logger.e("Chat error: $e");
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            elevation: 20,
+            action: SnackBarAction(
+              label: 'Settings',
+              onPressed: () {
+                AiSettingsRoute().push(context);
+              },
+            ),
+            content: Text(
+              'Configure Your API key in settings to use AI features.',
+            ),
+          ),
+        );
       } finally {
         loading.value = false;
       }
@@ -134,6 +149,10 @@ class DailyChatScreen extends HookConsumerWidget {
         child: AiChatWidget(
           welcomeMessageConfig: WelcomeMessageConfig(
             title: "Let's talk about your day",
+            containerDecoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(16),
+            ),
             titleStyle: theme.textTheme.headlineSmall?.copyWith(
               color: colorScheme.onSurface,
               fontWeight: FontWeight.bold,

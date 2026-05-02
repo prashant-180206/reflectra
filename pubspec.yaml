@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   appflowy_editor: ^6.2.0
+  convex_bottom_bar: ^3.2.0
   dio: ^5.9.2
   flex_color_scheme: ^8.4.0
   flutter:
@@ -25,6 +26,7 @@ dependencies:
   path_provider: ^2.1.5
   pattern_box: ^0.5.4
   riverpod_annotation: ^4.0.2
+  shared_preferences: ^2.5.5
   toastification: ^3.2.0
 
 dev_dependencies:
@@ -37,3 +39,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/
+    # - assets/images/splash.png
