@@ -45,7 +45,7 @@ class HomeScreen extends HookConsumerWidget {
           // waveHeight: 20,
           // waveLength: 200,
         ),
-        
+
         child: SafeArea(
           child: dashboardStatsAsync.when(
             loading: () => _buildLoadingState(context),
@@ -230,6 +230,9 @@ class HomeScreen extends HookConsumerWidget {
     DashboardStats stats,
     WidgetRef ref,
   ) {
+    final bgcol =    Theme.of(
+            context,
+          ).colorScheme.primary.withValues(alpha: 0.1);
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
@@ -241,38 +244,28 @@ class HomeScreen extends HookConsumerWidget {
           title: 'Today\'s Entries',
           value: stats.todayEntriesCount.toString(),
           icon: Icons.today,
-          backgroundColor: Theme.of(
-            context,
-          ).colorScheme.onSecondary.withValues(alpha: 0.1),
+          backgroundColor: bgcol,
           onTap: () => SavedRoute().push(context),
         ),
         StatCard(
           title: 'Total Entries',
           value: stats.totalEntriesCount.toString(),
           icon: Icons.library_books,
-          backgroundColor: Theme.of(
-            context,
-          ).colorScheme.onTertiary.withValues(alpha: 0.1),
+          backgroundColor: bgcol,
           onTap: () => SavedRoute().push(context),
         ),
         StatCard(
           title: 'Persona',
           value: stats.isPersonaConfigured ? '✓' : '—',
           icon: Icons.person,
-          backgroundColor: stats.isPersonaConfigured
-              ? Theme.of(
-                  context,
-                ).colorScheme.onInverseSurface.withValues(alpha: 0.5)
-              : null,
+          backgroundColor: bgcol,
           onTap: () => ProfileRoute().push(context),
         ),
         StatCard(
           title: 'Instructions',
           value: stats.isCustomInstructionsSet ? '✓' : '—',
           icon: Icons.note_alt,
-          backgroundColor: stats.isCustomInstructionsSet
-              ? Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.1)
-              : null,
+          backgroundColor: bgcol,
           onTap: () => SettingsRoute().push(context),
         ),
       ],

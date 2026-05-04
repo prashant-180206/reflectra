@@ -95,85 +95,87 @@ class PersonaViewerEditorScreen extends HookConsumerWidget {
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Your Persona"),
-        actions: [
-          IconButton(
-            onPressed: isLoading.value || isSaving.value ? null : save,
-            icon: isSaving.value
-                ? const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.save),
-            tooltip: "Save Persona",
-          ),
-        ],
-      ),
-      body: isLoading.value
-          ? const Center(child: CircularProgressIndicator())
-          : FormBuilder(
-              key: formKey,
-              child: ListView(
-                padding: const EdgeInsets.all(20),
-                children: [
-                  _Header(persona: persona.value),
-
-                  const SizedBox(height: 12),
-
-                  /// 🔥 AI Button with refresh
-                  UpdatePersonaButton(
-                    onCompleted: (success) async {
-                      if (success) {
-                        await loadPersona(); // refresh UI
-                      }
-                    },
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  _Section(
-                    title: "Identity",
-                    children: [
-                      _field("preferredName", "Your name"),
-                      _field("ageRange", "Age range"),
-                      _field("occupation", "What do you do"),
-                      _field("region", "Where are you from"),
-                    ],
-                  ),
-
-                  _Section(
-                    title: "Personality",
-                    children: [
-                      _field("traits", "Traits (comma separated)"),
-                      _field("thinkingStyle", "How you think"),
-                      _field("energyPattern", "Energy pattern"),
-                    ],
-                  ),
-
-                  _Section(
-                    title: "Life",
-                    children: [
-                      _field("hobbies", "Hobbies"),
-                      _field("goals", "Goals"),
-                    ],
-                  ),
-
-                  _Section(
-                    title: "Notes",
-                    children: [
-                      _field(
-                        "additionalContext",
-                        "Write freely about yourself...",
-                        maxLines: 6,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Your Persona"),
+          actions: [
+            IconButton(
+              onPressed: isLoading.value || isSaving.value ? null : save,
+              icon: isSaving.value
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.save),
+              tooltip: "Save Persona",
             ),
+          ],
+        ),
+        body: isLoading.value
+            ? const Center(child: CircularProgressIndicator())
+            : FormBuilder(
+                key: formKey,
+                child: ListView(
+                  padding: const EdgeInsets.all(20),
+                  children: [
+                    _Header(persona: persona.value),
+      
+                    const SizedBox(height: 12),
+      
+                    /// 🔥 AI Button with refresh
+                    UpdatePersonaButton(
+                      onCompleted: (success) async {
+                        if (success) {
+                          await loadPersona(); // refresh UI
+                        }
+                      },
+                    ),
+      
+                    const SizedBox(height: 24),
+      
+                    _Section(
+                      title: "Identity",
+                      children: [
+                        _field("preferredName", "Your name"),
+                        _field("ageRange", "Age range"),
+                        _field("occupation", "What do you do"),
+                        _field("region", "Where are you from"),
+                      ],
+                    ),
+      
+                    _Section(
+                      title: "Personality",
+                      children: [
+                        _field("traits", "Traits (comma separated)"),
+                        _field("thinkingStyle", "How you think"),
+                        _field("energyPattern", "Energy pattern"),
+                      ],
+                    ),
+      
+                    _Section(
+                      title: "Life",
+                      children: [
+                        _field("hobbies", "Hobbies"),
+                        _field("goals", "Goals"),
+                      ],
+                    ),
+      
+                    _Section(
+                      title: "Notes",
+                      children: [
+                        _field(
+                          "additionalContext",
+                          "Write freely about yourself...",
+                          maxLines: 6,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+      ),
     );
   }
 

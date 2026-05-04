@@ -132,64 +132,71 @@ class DailyChatScreen extends HookConsumerWidget {
           ),
         ],
       ),
-      body: SafeArea(
-        child: PatternBoxWidget(
-          pattern: DottedWavePainter(),
-          backgroundGradient: LinearGradient(
-            colors: [
-              colorScheme.primary.withValues(alpha: 0.05),
-              colorScheme.primary.withValues(alpha: 0.5),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-
-          // child: PatternBoxWidget(pattern: DottedWavePainter()),
-          child: AiChatWidget(
-            padding: const EdgeInsets.all(0),
-            welcomeMessageConfig: WelcomeMessageConfig(
-              title: "Let's talk about your day",
-              containerDecoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(16),
+      body: PatternBoxWidget(
+        pattern: DottedWavePainter(),
+        backgroundGradient: LinearGradient(
+          colors: [
+            colorScheme.primary.withValues(alpha: 0.05),
+            colorScheme.primary.withValues(alpha: 0.5),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: AiChatWidget(
+              padding: const EdgeInsets.all(8),
+              welcomeMessageConfig: WelcomeMessageConfig(
+                title: "Let's talk about your day",
+                containerDecoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                titleStyle: theme.textTheme.headlineSmall?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              titleStyle: theme.textTheme.headlineSmall?.copyWith(
-                color: colorScheme.onSurface,
-                fontWeight: FontWeight.bold,
+              enableMarkdownStreaming: true,
+              loadingConfig: LoadingConfig(
+                isLoading: loading.value,
+                typingIndicatorColor: colorScheme.primary,
               ),
-            ),
-            enableMarkdownStreaming: true,
-            loadingConfig: LoadingConfig(
-              isLoading: loading.value,
-              typingIndicatorColor: colorScheme.primary,
-            ),
-            currentUser: currentUser,
-            aiUser: aiUser,
-            controller: controller,
-            onSendMessage: handleSendMessage,
+              currentUser: currentUser,
+              aiUser: aiUser,
+              controller: controller,
+              onSendMessage: handleSendMessage,
 
-            messageOptions: MessageOptions(
-              showUserName: false,
-              showTime: false,
-              aiTextColor: colorScheme.onSurfaceVariant,
-              userTextColor: colorScheme.onPrimary,
-              bubbleStyle: BubbleStyle(
-                userBubbleColor: colorScheme.primary,
-                aiBubbleColor: colorScheme.surfaceContainerHighest,
-                aiNameColor: colorScheme.onSurfaceVariant,
-                userNameColor: colorScheme.onPrimary,
-                // userTextStyle: TextStyle(color: colorScheme.onPrimary),
+              messageOptions: MessageOptions(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: colorScheme.primary.withValues(alpha: 0.5),
+                  ),
+                  // borderRadius: BorderRadius.circular(12),
+                ),
+                showUserName: false,
+                showTime: false,
+                aiTextColor: colorScheme.onSurfaceVariant,
+                userTextColor: colorScheme.onPrimary,
+                bubbleStyle: BubbleStyle(
+                  userBubbleColor: colorScheme.primary,
+                  aiBubbleColor: colorScheme.surfaceContainerHighest,
+                  aiNameColor: colorScheme.onSurfaceVariant,
+                  userNameColor: colorScheme.onPrimary,
+                  // userTextStyle: TextStyle(color: colorScheme.onPrimary),
+                ),
               ),
-            ),
 
-            inputOptions: InputOptions(
-              sendButtonColor: colorScheme.primary,
-              cursorColor: colorScheme.primary,
-              margin: EdgeInsets.fromLTRB(10, 4, 10, 4),
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
-              sendOnEnter: true,
-              decoration: InputDecoration.collapsed(
-                hintText: 'Reflect on your day...',
+              inputOptions: InputOptions(
+                sendButtonColor: colorScheme.primary,
+                cursorColor: colorScheme.primary,
+                margin: EdgeInsets.fromLTRB(10, 4, 10, 4),
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
+                sendOnEnter: true,
+                decoration: InputDecoration.collapsed(
+                  hintText: 'Reflect on your day...',
+                ),
               ),
             ),
           ),

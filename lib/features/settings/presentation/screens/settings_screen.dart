@@ -9,6 +9,7 @@ class SettingsScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: SafeArea(
@@ -21,8 +22,11 @@ class SettingsScreen extends HookConsumerWidget {
             SizedBox(height: 12),
             Card(
               child: ListTile(
-                title: const Text('AI Settings'),
-                subtitle: const Text('API key, and model selection'),
+                title: Text('AI Settings', style: theme.textTheme.titleMedium),
+                subtitle: Text(
+                  'API key, and model selection',
+                  style: theme.textTheme.bodyMedium,
+                ),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
                   AiSettingsRoute().push(context);

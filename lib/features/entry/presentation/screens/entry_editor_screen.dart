@@ -1,9 +1,9 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:reflectra/core/database/models/diary_entry.dart';
+import 'package:reflectra/core/routes/app_routes.dart';
 import 'package:reflectra/features/entry/data/dbconnect.dart';
 import 'package:reflectra/features/entry/data/riverpod/active_entry_provider.dart';
 import 'package:reflectra/core/widgets/editor.dart';
@@ -43,7 +43,7 @@ class EntryEditorScreen extends HookConsumerWidget {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Entry saved locally.')));
-      context.pop();
+      HomeRoute().go(context);
     }
 
     return SafeArea(

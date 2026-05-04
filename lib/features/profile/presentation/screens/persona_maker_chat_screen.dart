@@ -139,47 +139,52 @@ class PersonaMakingChatScreen extends HookConsumerWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        child: AiChatWidget(
-          welcomeMessageConfig: WelcomeMessageConfig(
-            title: "Let’s build your persona together",
-            containerDecoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            titleStyle: theme.textTheme.headlineSmall?.copyWith(
-              color: colorScheme.onSurface,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          enableMarkdownStreaming: true,
-          loadingConfig: LoadingConfig(
-            isLoading: loading.value,
-            typingIndicatorColor: colorScheme.primary,
-          ),
-          currentUser: currentUser,
-          aiUser: aiUser,
-          controller: controller,
-          onSendMessage: handleSendMessage,
-          messageOptions: MessageOptions(
-            showUserName: false,
-            showTime: false,
-            aiTextColor: colorScheme.onSurfaceVariant,
-            userTextColor: colorScheme.onPrimary,
-            bubbleStyle: BubbleStyle(
-              userBubbleColor: colorScheme.primary,
-              aiBubbleColor: colorScheme.surfaceContainerHighest,
-              aiNameColor: colorScheme.onSurfaceVariant,
-              userNameColor: colorScheme.onPrimary,
-            ),
-          ),
-          inputOptions: InputOptions(
-            sendButtonColor: colorScheme.primary,
-            cursorColor: colorScheme.primary,
-            margin: EdgeInsets.fromLTRB(10, 4, 10, 4),
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
-            sendOnEnter: true,
-            decoration: InputDecoration.collapsed(
-              hintText: 'Explore Yourself ...',
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: AiChatWidget(
+              welcomeMessageConfig: WelcomeMessageConfig(
+                title: "Let’s build your persona together",
+                containerDecoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                titleStyle: theme.textTheme.headlineSmall?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              enableMarkdownStreaming: true,
+              loadingConfig: LoadingConfig(
+                isLoading: loading.value,
+                typingIndicatorColor: colorScheme.primary,
+              ),
+              currentUser: currentUser,
+              aiUser: aiUser,
+              controller: controller,
+              onSendMessage: handleSendMessage,
+              messageOptions: MessageOptions(
+                showUserName: false,
+                showTime: false,
+                aiTextColor: colorScheme.onSurfaceVariant,
+                userTextColor: colorScheme.onPrimary,
+                bubbleStyle: BubbleStyle(
+                  userBubbleColor: colorScheme.primary,
+                  aiBubbleColor: colorScheme.surfaceContainerHighest,
+                  aiNameColor: colorScheme.onSurfaceVariant,
+                  userNameColor: colorScheme.onPrimary,
+                ),
+              ),
+              inputOptions: InputOptions(
+                sendButtonColor: colorScheme.primary,
+                cursorColor: colorScheme.primary,
+                margin: EdgeInsets.fromLTRB(10, 4, 10, 4),
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
+                sendOnEnter: true,
+                decoration: InputDecoration.collapsed(
+                  hintText: 'Explore Yourself ...',
+                ),
+              ),
             ),
           ),
         ),

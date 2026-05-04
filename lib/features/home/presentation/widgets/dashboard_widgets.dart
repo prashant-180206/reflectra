@@ -93,7 +93,6 @@ class FeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Material(
       child: InkWell(
@@ -101,9 +100,7 @@ class FeatureCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: isConfigured
-                ? theme.primaryColor.withValues(alpha: .1)
-                : (isDark ? Colors.grey[800] : Colors.grey[100]),
+            color: theme.primaryColor.withValues(alpha: .1),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isConfigured
@@ -117,13 +114,10 @@ class FeatureCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isConfigured ? theme.primaryColor : theme.dividerColor,
+                  color: theme.primaryColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  icon,
-                  color: isConfigured ? Colors.white : theme.hintColor,
-                ),
+                child: Icon(icon, color: Colors.white),
               ),
               const SizedBox(width: 16),
               Expanded(
