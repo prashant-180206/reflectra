@@ -123,95 +123,73 @@ class DailyChatScreen extends HookConsumerWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: TextButton(
+            child: IconButton(
               onPressed: finishAndSave,
-              style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
-              child: const Text(
-                'Finish',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+              icon: const Icon(Icons.check),
+              tooltip: "Finish",
+              color: colorScheme.onPrimary,
             ),
           ),
         ],
       ),
-      body: PatternBoxWidget(
-        pattern: DottedWavePainter(),
-        backgroundGradient: LinearGradient(
-          colors: [
-            colorScheme.primary.withValues(alpha: 0.05),
-            colorScheme.primary.withValues(alpha: 0.5),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-
-        // child: PatternBoxWidget(pattern: DottedWavePainter()),
-        child: AiChatWidget(
-          welcomeMessageConfig: WelcomeMessageConfig(
-            title: "Let's talk about your day",
-            containerDecoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            titleStyle: theme.textTheme.headlineSmall?.copyWith(
-              color: colorScheme.onSurface,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          enableMarkdownStreaming: true,
-          loadingConfig: LoadingConfig(
-            isLoading: loading.value,
-            typingIndicatorColor: colorScheme.primary,
-          ),
-          currentUser: currentUser,
-          aiUser: aiUser,
-          controller: controller,
-          onSendMessage: handleSendMessage,
-
-          messageOptions: MessageOptions(
-            showUserName: false,
-            showTime: false,
-            aiTextColor: colorScheme.onSurfaceVariant,
-            userTextColor: colorScheme.onPrimary,
-            bubbleStyle: BubbleStyle(
-              userBubbleColor: colorScheme.primary,
-              aiBubbleColor: colorScheme.surfaceContainerHighest,
-              aiNameColor: colorScheme.onSurfaceVariant,
-              userNameColor: colorScheme.onPrimary,
-              // userTextStyle: TextStyle(color: colorScheme.onPrimary),
-            ),
+      body: SafeArea(
+        child: PatternBoxWidget(
+          pattern: DottedWavePainter(),
+          backgroundGradient: LinearGradient(
+            colors: [
+              colorScheme.primary.withValues(alpha: 0.05),
+              colorScheme.primary.withValues(alpha: 0.5),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
 
-          inputOptions: InputOptions(
-            containerPadding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
-            containerBackgroundColor: colorScheme.surface,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            sendOnEnter: true,
-            decoration: InputDecoration(
-              hintText: 'Reflect on your day...',
-              hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
-
-              filled: true,
-              fillColor: colorScheme.surfaceContainerHigh,
-
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
+          // child: PatternBoxWidget(pattern: DottedWavePainter()),
+          child: AiChatWidget(
+            padding: const EdgeInsets.all(0),
+            welcomeMessageConfig: WelcomeMessageConfig(
+              title: "Let's talk about your day",
+              containerDecoration: BoxDecoration(
+                color: colorScheme.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(16),
               ),
-
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide.none,
+              titleStyle: theme.textTheme.headlineSmall?.copyWith(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
               ),
+            ),
+            enableMarkdownStreaming: true,
+            loadingConfig: LoadingConfig(
+              isLoading: loading.value,
+              typingIndicatorColor: colorScheme.primary,
+            ),
+            currentUser: currentUser,
+            aiUser: aiUser,
+            controller: controller,
+            onSendMessage: handleSendMessage,
 
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(color: colorScheme.outlineVariant),
+            messageOptions: MessageOptions(
+              showUserName: false,
+              showTime: false,
+              aiTextColor: colorScheme.onSurfaceVariant,
+              userTextColor: colorScheme.onPrimary,
+              bubbleStyle: BubbleStyle(
+                userBubbleColor: colorScheme.primary,
+                aiBubbleColor: colorScheme.surfaceContainerHighest,
+                aiNameColor: colorScheme.onSurfaceVariant,
+                userNameColor: colorScheme.onPrimary,
+                // userTextStyle: TextStyle(color: colorScheme.onPrimary),
               ),
+            ),
 
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+            inputOptions: InputOptions(
+              sendButtonColor: colorScheme.primary,
+              cursorColor: colorScheme.primary,
+              margin: EdgeInsets.fromLTRB(10, 4, 10, 4),
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
+              sendOnEnter: true,
+              decoration: InputDecoration.collapsed(
+                hintText: 'Reflect on your day...',
               ),
             ),
           ),

@@ -11,7 +11,7 @@ class EntryDb {
       DbService.getEntryById(id);
 
   static Future<List<DiaryEntry>> getLastThreeEntries() =>
-      DbService.getLastThreeEntries();
+      DbService.getLastEntries();
 
   static Future<int> saveEntry(DiaryEntry entry) =>
       DbService.saveEntry(entry);

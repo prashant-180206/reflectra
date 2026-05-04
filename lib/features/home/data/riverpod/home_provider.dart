@@ -21,7 +21,7 @@ Future<int> totalEntriesCount(Ref ref) async {
 /// Provider for getting last 3 diary entries
 @riverpod
 Future<List<DiaryEntry>> lastThreeEntries(Ref ref) async {
-  return DbService.getLastThreeEntries();
+  return DbService.getLastEntries();
 }
 
 /// Provider for getting user persona

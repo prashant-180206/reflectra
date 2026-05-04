@@ -97,9 +97,7 @@ class PersonaMakingChatScreen extends HookConsumerWidget {
 
         if (personaText.trim().isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No persona content was generated.'),
-            ),
+            const SnackBar(content: Text('No persona content was generated.')),
           );
           return;
         }
@@ -109,9 +107,7 @@ class PersonaMakingChatScreen extends HookConsumerWidget {
         if (!context.mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Persona saved successfully.'),
-          ),
+          const SnackBar(content: Text('Persona saved successfully.')),
         );
       } finally {
         loading.value = false;
@@ -124,15 +120,11 @@ class PersonaMakingChatScreen extends HookConsumerWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: TextButton(
+            child: IconButton(
               onPressed: finishAndSave,
-              style: TextButton.styleFrom(
-                foregroundColor: colorScheme.primary,
-              ),
-              child: const Text(
-                'Finish',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+              icon: const Icon(Icons.check),
+              tooltip: "Finish",
+              color: colorScheme.onPrimary,
             ),
           ),
         ],
@@ -181,39 +173,13 @@ class PersonaMakingChatScreen extends HookConsumerWidget {
             ),
           ),
           inputOptions: InputOptions(
-            containerPadding:
-                const EdgeInsets.fromLTRB(12, 8, 12, 16),
-            containerBackgroundColor: colorScheme.surface,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            sendButtonColor: colorScheme.primary,
+            cursorColor: colorScheme.primary,
+            margin: EdgeInsets.fromLTRB(10, 4, 10, 4),
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
             sendOnEnter: true,
-            decoration: InputDecoration(
-              hintText: 'Explore Yourself...',
-              hintStyle: TextStyle(
-                color: colorScheme.onSurfaceVariant,
-              ),
-              filled: true,
-              fillColor: colorScheme.surfaceContainerHigh,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide:
-                    BorderSide(color: colorScheme.outlineVariant),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(
-                  color: colorScheme.primary,
-                  width: 1.5,
-                ),
-              ),
+            decoration: InputDecoration.collapsed(
+              hintText: 'Explore Yourself ...',
             ),
           ),
         ),

@@ -23,8 +23,10 @@ class DbService {
     return _isar.diaryEntrys.get(id);
   }
 
-  static Future<List<DiaryEntry>> getLastThreeEntries() async {
-    return _isar.diaryEntrys.where().sortByCreatedAtDesc().findAll(limit: 3);
+  static Future<List<DiaryEntry>> getLastEntries({int limit = 3}) async {
+    return _isar.diaryEntrys.where().sortByCreatedAtDesc().findAll(
+      limit: limit,
+    );
   }
 
   static Future<List<DiaryEntry>> getAllEntries() async {
@@ -35,10 +37,10 @@ class DbService {
     required int limit,
     required int offset,
   }) async {
-    return _isar.diaryEntrys
-        .where()
-        .sortByCreatedAtDesc()
-        .findAll(offset: offset, limit: limit);
+    return _isar.diaryEntrys.where().sortByCreatedAtDesc().findAll(
+      offset: offset,
+      limit: limit,
+    );
   }
 
   static Future<int> countEntries() async {
@@ -64,12 +66,10 @@ class DbService {
 
   static Future<int> getEntriesCountByMonth(int year, int month) async {
     final entries = await getAllEntries();
-    return entries
-        .where((e) {
-          final date = DbUtils.dateFromDayKey(e.dayKey);
-          return date.year == year && date.month == month;
-        })
-        .length;
+    return entries.where((e) {
+      final date = DbUtils.dateFromDayKey(e.dayKey);
+      return date.year == year && date.month == month;
+    }).length;
   }
 
   static Future<int> getEntriesCountByDay(DateTime date) async {
@@ -96,7 +96,7 @@ class DbService {
   }
 
   static Future<bool> hasPersona() async {
-    return  _isar.personas.get(0) != null;
+    return _isar.personas.get(0) != null;
   }
 
   // ==================== CUSTOM INSTRUCTIONS ====================
@@ -118,15 +118,14 @@ class DbService {
   }
 
   static Future<bool> hasCustomInstruction() async {
-    return  _isar.customInstructions.get(0) != null;
+    return _isar.customInstructions.get(0) != null;
   }
 
   // ==================== STATISTICS ====================
   static Future<Map<String, dynamic>> getDashboardStats() async {
     final totalEntries = await countEntries();
-    final lastThreeEntries = await getLastThreeEntries();
-    final todayEntries =
-        await getEntriesCountByDay(DateTime.now());
+    final lastThreeEntries = await getLastEntries();
+    final todayEntries = await getEntriesCountByDay(DateTime.now());
     final hasPersona = await DbService.getPersona() != null;
     final hasCustomInstructions =
         await DbService.getCustomInstruction() != null;
