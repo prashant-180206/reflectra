@@ -64,6 +64,7 @@ flutter_native_splash:
 
   android: true
   ios: false
+  fullscreen: true
 
   android_12:
     image: assets/images/splash.png

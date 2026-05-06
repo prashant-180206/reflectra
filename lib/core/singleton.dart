@@ -1,4 +1,5 @@
 import 'package:logger/web.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final logger = Logger(
   printer: PrettyPrinter(
@@ -9,3 +10,5 @@ final logger = Logger(
     dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
   ),
 );
+
+final secureStorage = FlutterSecureStorage();

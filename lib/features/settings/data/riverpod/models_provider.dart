@@ -8,8 +8,9 @@ part 'models_provider.g.dart';
 class AiModels extends _$AiModels {
   @override
   FutureOr<List<String>> build() async {
-    if (await Apikeystore.hasKey()) {
-      state = AsyncError('API key Not Set', StackTrace.current);
+    state = AsyncError('API key Not Set', StackTrace.current);
+    final haskey = await Apikeystore.hasKey();
+    if (!haskey) {
       throw Exception('API key Not Set');
     }
     return OllamaBaseService.listModels();
@@ -18,7 +19,8 @@ class AiModels extends _$AiModels {
   Future<void> refresh() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      if (await Apikeystore.hasKey()) {
+      final haskey = await Apikeystore.hasKey();
+      if (!haskey) {
         throw Exception('API key Not Set');
       }
       return OllamaBaseService.listModels();

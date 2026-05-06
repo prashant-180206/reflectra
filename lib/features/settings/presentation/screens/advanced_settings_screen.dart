@@ -110,6 +110,7 @@ class ByokCard extends HookConsumerWidget {
                 FilledButton(
                   onPressed: () async {
                     await Apikeystore.setKey(keyController.text.trim());
+                    await ref.read(aiModelsProvider.notifier).refresh();
                     refreshCounter.value++;
                   },
                   child: const Text('Save Key'),

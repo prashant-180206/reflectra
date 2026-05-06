@@ -33,8 +33,8 @@ class DailyChatScreen extends HookConsumerWidget {
           logger.e('Failed to initialize AI client: $e');
           if (!context.mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to initialize AI. Check BYOK settings.'),
+            SnackBar(
+              content: Text('Failed to initialize AI. Check BYOK settings. $e'),
             ),
           );
         }
@@ -110,7 +110,7 @@ class DailyChatScreen extends HookConsumerWidget {
               },
             ),
             content: Text(
-              'Configure Your API key in settings to use AI features.',
+              'Configure Your API key in settings to use AI features.\nError: $e',
             ),
           ),
         );
