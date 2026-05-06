@@ -23,6 +23,8 @@ class DailyChatScreen extends HookConsumerWidget {
     final loading = useState(false);
     final ollama = useMemoized(() => DailyChatAi());
 
+    final inputcontroller = useTextEditingController();
+
     useEffect(() {
       Future<void> initialize() async {
         try {
@@ -45,26 +47,45 @@ class DailyChatScreen extends HookConsumerWidget {
       };
     }, []);
 
+    Future<void> handleContinue() async {
+      if (loading.value) return;
+
+      loading.value = true;
+      controller.setStreamingMessage(null);
+      try {
+        final response = await ollama.continueChat();
+
+        final responseId = 'ai_${DateTime.now().microsecondsSinceEpoch}';
+        controller.addMessage(
+          ChatMessage(
+            text: response,
+            user: aiUser,
+            createdAt: DateTime.now(),
+            customProperties: {'id': responseId},
+          ),
+        );
+        controller.setStreamingMessage(responseId);
+      } catch (e) {
+        logger.e("Continue chat error: $e");
+      } finally {
+        loading.value = false;
+      }
+    }
+
     Future<void> handleSendMessage(ChatMessage message) async {
       if (loading.value) return;
 
       loading.value = true;
       controller.setStreamingMessage(null);
       try {
-        String response;
-
-        if (message.text.trim().isEmpty) {
-          response = await ollama.continueChat();
-        } else {
-          controller.addMessage(
-            ChatMessage(
-              text: message.text,
-              user: currentUser,
-              createdAt: DateTime.now(),
-            ),
-          );
-          response = await ollama.chat(message.text);
-        }
+        controller.addMessage(
+          ChatMessage(
+            text: message.text,
+            user: currentUser,
+            createdAt: DateTime.now(),
+          ),
+        );
+        final response = await ollama.chat(message.text);
 
         final responseId = 'ai_${DateTime.now().microsecondsSinceEpoch}';
         controller.addMessage(
@@ -85,7 +106,7 @@ class DailyChatScreen extends HookConsumerWidget {
             action: SnackBarAction(
               label: 'Settings',
               onPressed: () {
-                AiSettingsRoute().push(context);
+                SettingsRoute().go(context);
               },
             ),
             content: Text(
@@ -101,6 +122,7 @@ class DailyChatScreen extends HookConsumerWidget {
     Future<void> finishAndSave() async {
       if (loading.value) return;
       loading.value = true;
+      controller.setStreamingMessage(null);
 
       try {
         final diaryText = await ollama.finishChat(null);
@@ -189,11 +211,30 @@ class DailyChatScreen extends HookConsumerWidget {
               ),
 
               inputOptions: InputOptions(
+                textController: inputcontroller,
+                sendButtonPadding: EdgeInsets.all(0),
                 sendButtonColor: colorScheme.primary,
+                sendButtonBuilder: (onSend) {
+                  return GestureDetector(
+                    onTap: () {
+                      if (loading.value) return;
+                      if (inputcontroller.text.trim().isEmpty) {
+                        handleContinue();
+                        return;
+                      }
+                      logger.d(
+                        "Send button tapped with input: ${inputcontroller.text}",
+                      );
+                      onSend();
+                    },
+                    child: Icon(Icons.send, color: colorScheme.primary),
+                  );
+                },
                 cursorColor: colorScheme.primary,
                 margin: EdgeInsets.fromLTRB(10, 4, 10, 4),
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
                 sendOnEnter: true,
+
                 decoration: InputDecoration.collapsed(
                   hintText: 'Reflect on your day...',
                 ),

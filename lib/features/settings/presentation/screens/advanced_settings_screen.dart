@@ -101,6 +101,7 @@ class ByokCard extends HookConsumerWidget {
                   onPressed: () async {
                     await Apikeystore.deleteKey();
                     keyController.clear();
+                    await ref.read(aiModelsProvider.notifier).refresh();
                     refreshCounter.value++;
                   },
                   child: const Text('Remove'),
@@ -127,7 +128,7 @@ class ModelSelectionCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final models = ref.watch(aimodelsProvider);
+    final models = ref.watch(aiModelsProvider);
     final refreshCounter = useState(0);
     final selectedModel = useState<String?>(null);
 

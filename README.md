@@ -1,4 +1,4 @@
-# mindlog
+# reflectra
 
 Personal journaling app with AI-assisted daily check-ins and structured diary generation.
 
@@ -27,7 +27,7 @@ flutter pub get
 - Generate code (Isar and other builders):
 
 ```bash
-flutter pub run build_runner build --delete-conflicting-outputs
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 **Running the app**
@@ -71,5 +71,3 @@ flutter pub run build_runner build --delete-conflicting-outputs
 # run on device
 flutter run
 ```
-
-If you'd like, I can expand this README with architecture diagrams, a route map, or contributor guidelines.

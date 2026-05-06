@@ -57,10 +57,16 @@ class OllamaBaseService {
 
   Future<String> continueChat() async {
     if (ai == null) throw Exception('AI not initialized');
+    messagelist.add(
+      ChatMessage.system(
+        'Continue The conversation , User decided to Continue without adding new input',
+      ),
+    ); // Add empty user message to indicate continuation
     final response = await ai!.chat.create(
       request: ChatRequest(model: modelName, messages: messagelist),
     );
     final content = response.message?.content ?? '';
+    messagelist.removeLast();
     messagelist.add(ChatMessage.assistant(content));
     return content;
   }
